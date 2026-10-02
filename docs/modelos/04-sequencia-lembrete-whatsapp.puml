@@ -1,0 +1,31 @@
+@startuml
+title Lembrete e confirmação de presença (RF-03 e RF-04)
+autonumber
+
+participant "Agendador\n(tarefa programada)" as Job
+participant "Sistema de\nAgendamento" as Sis
+participant "WhatsApp API\n(sistema externo)" as WA
+actor Cliente
+actor Barbeiro
+
+== 24h antes do horário ==
+Job -> Sis : verificarAgendamentosDe24h()
+Sis -> WA : enviarMensagem(telefone, "Confirma seu horário?")
+WA --> Sis : aceito
+Sis -> Sis : status = AGUARDANDO_CONFIRMACAO
+WA -> Cliente : mensagem de lembrete
+
+alt Cliente confirma
+  Cliente -> WA : "SIM"
+  WA -> Sis : webhook(resposta = SIM)
+  Sis -> Sis : status = CONFIRMADO\nregistra confirmadoEm
+  Sis -> WA : enviarMensagem("Horário confirmado!")
+  WA -> Cliente : confirmação
+else Sem resposta até 2h antes
+  == 2h antes do horário ==
+  Job -> Sis : verificarNaoConfirmados()
+  Sis -> Sis : status = LIBERADO\nhorário volta a ficar livre
+  Sis -> WA : enviarMensagem(barbeiro, "Horário liberado")
+  WA -> Barbeiro : aviso de liberação
+end
+@enduml

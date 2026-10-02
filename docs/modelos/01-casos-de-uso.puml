@@ -1,0 +1,43 @@
+@startuml
+title Casos de uso - Sistema de Agendamento para Barbearias
+left to right direction
+skinparam packageStyle rectangle
+
+actor Cliente
+actor Atendente
+actor Barbeiro
+actor Dono
+actor "WhatsApp\n(sistema externo)" as WhatsApp
+
+rectangle "Sistema de Agendamento" {
+  usecase "Autenticar com telefone\ne código único" as UC1
+  usecase "Agendar horário" as UC2
+  usecase "Verificar conflito\nde horário" as UC3
+  usecase "Fazer encaixe" as UC7
+  usecase "Confirmar presença" as UC4
+  usecase "Enviar lembrete 24h" as UC5
+  usecase "Liberar horário\nnão confirmado" as UC6
+  usecase "Ver agenda" as UC8
+  usecase "Registrar atendimento" as UC9
+  usecase "Ver fechamento do dia" as UC10
+  usecase "Ver histórico de faltas" as UC11
+  usecase "Configurar logo e cores" as UC12
+}
+
+Cliente --> UC2
+Cliente --> UC4
+Atendente --> UC7
+Barbeiro --> UC8
+Barbeiro --> UC9
+Barbeiro --> UC10
+Dono --> UC8
+Dono --> UC10
+Dono --> UC11
+Dono --> UC12
+UC5 -- WhatsApp
+UC6 -- WhatsApp
+
+UC2 .> UC1 : <<include>>
+UC2 .> UC3 : <<include>>
+UC7 .> UC3 : <<include>>
+@enduml

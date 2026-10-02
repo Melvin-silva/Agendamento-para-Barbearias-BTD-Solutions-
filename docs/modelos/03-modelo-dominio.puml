@@ -1,0 +1,66 @@
+@startuml
+title Modelo de domínio - Agendamento para Barbearias
+hide circles
+skinparam classAttributeIconSize 0
+
+class Barbearia {
+  - nome : String
+  - logoUrl : String
+  - corPrimaria : String
+}
+class Barbeiro {
+  - nome : String
+  - percentualComissao : Decimal
+}
+class Cliente {
+  - nome : String
+  - telefone : String
+}
+class Servico {
+  - nome : String
+  - preco : Decimal
+  - duracaoMinutos : int
+}
+class Agendamento {
+  - dataHora : DateTime
+  - status : StatusAgendamento
+  + confirmar()
+  + liberar()
+  + cancelar()
+}
+class Lembrete {
+  - enviadoEm : DateTime
+  - confirmadoEm : DateTime
+}
+class Atendimento {
+  - concluidoEm : DateTime
+  - valorCobrado : Decimal
+  - valorComissao : Decimal
+}
+class CodigoAcesso {
+  - codigo : String
+  - expiraEm : DateTime
+}
+enum StatusAgendamento {
+  AGENDADO
+  AGUARDANDO_CONFIRMACAO
+  CONFIRMADO
+  CONCLUIDO
+  FALTOU
+  LIBERADO
+  CANCELADO
+}
+
+Barbearia "1" -- "1..*" Barbeiro : emprega >
+Barbearia "1" -- "1..*" Servico : oferece >
+Barbearia "1" -- "0..*" Cliente : atende >
+
+Cliente "1" -- "0..*" Agendamento : marca >
+Barbeiro "1" -- "0..*" Agendamento : atende >
+Servico "1" -- "0..*" Agendamento : é do tipo <
+
+Agendamento "1" *-- "0..1" Lembrete
+Agendamento "1" -- "0..1" Atendimento : gera >
+Cliente "1" -- "0..*" CodigoAcesso : recebe >
+Agendamento ..> StatusAgendamento
+@enduml

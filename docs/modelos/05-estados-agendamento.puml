@@ -1,0 +1,22 @@
+@startuml
+title Estados da entidade Agendamento
+
+state "Aguardando confirmação" as AguardandoConfirmacao
+
+[*] --> Agendado : cliente confirma\no agendamento
+Agendado --> AguardandoConfirmacao : lembrete enviado\n(24h antes)
+AguardandoConfirmacao --> Confirmado : cliente confirma
+AguardandoConfirmacao --> Liberado : sem confirmação\naté 2h antes
+
+Agendado --> Cancelado : cliente cancela
+AguardandoConfirmacao --> Cancelado : cliente cancela
+Confirmado --> Cancelado : cliente cancela
+
+Confirmado --> Concluido : barbeiro registra\no atendimento
+Confirmado --> Faltou : horário passou\nsem comparecer
+
+Concluido --> [*]
+Faltou --> [*]
+Liberado --> [*]
+Cancelado --> [*]
+@enduml
